@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-stamp">歴</div>
+    <h1>Anime Ledger</h1>
+    <p class="auth-sub">Your personal watch log — synced everywhere you sign in.</p>
+
+    <form id="auth-form">
+      <label>Email
+        <input type="email" id="auth-email" required autocomplete="email">
+      </label>
+      <label>Password
+        <input type="password" id="auth-password" required autocomplete="current-password" minlength="6">
+      </label>
+      <p id="auth-error" class="auth-error" hidden></p>
+      <div class="auth-actions">
+        <button type="submit" id="auth-signin-btn" class="btn btn-primary">Sign in</button>
+        <button type="button" id="auth-signup-btn" class="btn btn-ghost">Create account</button>
+      </div>
+    </form>
+    <p class="auth-note">First time here? Click <strong>Create account</strong> once — after that, sign in with the same email and password on any device.</p>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="app" hidden>
+
+  <header class="ledger-header">
+    <div class="ledger-title">
+      <span class="ledger-stamp">歴</span>
+      <div>
+        <h1>Anime Ledger</h1>
+        <p id="user-email" class="ledger-sub"></p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="open-add-modal" class="btn btn-primary">+ Add entry</button>
+      <button id="sign-out-btn" class="btn btn-ghost">Sign out</button>
+    </div>
+  </header>
+
+  <div class="search-row">
+    <input type="text" id="search-input" placeholder="Search a title in English or rōmaji…" autocomplete="off">
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="all">All</button>
+    <button class="tab" data-tab="good">Good</button>
+    <button class="tab" data-tab="bad">Bad</button>
+    <button class="tab" data-tab="watchlist">Watchlist <span id="watchlist-count" class="tab-count"></span></button>
+  </nav>
+
+  <main id="list-container" class="list-container">
+    <p class="empty-state" id="empty-state">No entries yet — add your first one.</p>
+  </main>
+</div>
+
+<!-- ============ ADD / EDIT MODAL ============ -->
+<div id="modal-backdrop" class="modal-backdrop" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modal-title">Add an anime</h2>
+      <button id="modal-close" class="icon-btn" aria-label="Close">×</button>
+    </div>
+
+    <div class="list-toggle">
+      <button type="button" class="list-toggle-btn active" data-list="watched">Watched / rated</button>
+      <button type="button" class="list-toggle-btn" data-list="watchlist">Watchlist (want to watch)</button>
+    </div>
+
+    <form id="entry-form">
+      <label>Title (English)
+        <input type="text" id="field-title" required placeholder="e.g. Attack on Titan">
+      </label>
+
+      <div class="romaji-row">
+        <label class="grow">Rōmaji (Japanese, English letters)
+          <input type="text" id="field-romaji" placeholder="e.g. shingeki no kyojin">
+        </label>
+        <button type="button" id="lookup-btn" class="btn btn-outline lookup-btn">🔎 Look up on MAL</button>
+      </div>
+      <p id="lookup-status" class="lookup-status" hidden></p>
+
+      <div id="watched-fields">
+        <fieldset class="rating-fieldset">
+          <legend>Rating</legend>
+          <label class="pill-radio"><input type="radio" name="rating" value="good"> Good</label>
+          <label class="pill-radio"><input type="radio" name="rating" value="bad"> Bad</label>
+          <label class="pill-radio"><input type="radio" name="rating" value="" checked> No rating yet</label>
+        </fieldset>
+
+        <label>Season status
+          <select id="field-season">
+            <option value="single">Only one season</option>
+            <option value="caughtup">Fully caught up, no sequel yet</option>
+            <option value="newseason">New season out — want to watch</option>
+            <option value="notreleased">Sequel announced, not released yet</option>
+          </select>
+        </label>
+      </div>
+
+      <label>Notes (optional)
+        <textarea id="field-notes" rows="2" placeholder="Anything you want to remember…"></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" id="delete-entry-btn" class="btn btn-danger" hidden>Delete</button>
+        <div class="modal-actions-right">
+          <button type="button" id="modal-cancel" class="btn btn-ghost">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Firebase (compat SDK — simplest for a static site) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
