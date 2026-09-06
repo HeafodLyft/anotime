@@ -1,5 +1,5 @@
 // ============================================================
-// Anime Ledger — app logic
+// Anime Ledger — app logic 
 // ============================================================
 
 firebase.initializeApp(firebaseConfig);
