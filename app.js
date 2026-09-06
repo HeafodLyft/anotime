@@ -283,6 +283,10 @@ deleteBtn.addEventListener("click", () => {
 
 entryForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  if (!currentUser) {
+    alert("You're not signed in yet — close this and sign in first.");
+    return;
+  }
   const title = $("field-title").value.trim();
   if (!title) return;
 
