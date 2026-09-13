@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anime Ledger</title>
+<title>Anotime</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -13,9 +13,9 @@
 <!-- ============ LOGIN SCREEN ============ -->
 <div id="auth-screen" class="auth-screen">
   <div class="auth-card">
-    <div class="auth-stamp">歴</div>
-    <h1>Anime Ledger</h1>
-    <p class="auth-sub">Your personal watch log — synced everywhere you sign in.</p>
+    <div class="auth-stamp">アノ</div>
+    <h1>Anotime</h1>
+    <p class="auth-sub">anime + note — your personal watch log, synced everywhere.</p>
 
     <form id="auth-form">
       <label>Email
@@ -39,27 +39,54 @@
 
   <header class="ledger-header">
     <div class="ledger-title">
-      <span class="ledger-stamp">歴</span>
+      <span class="ledger-stamp">アノ</span>
       <div>
-        <h1>Anime Ledger</h1>
+        <h1>Anotime</h1>
         <p id="user-email" class="ledger-sub"></p>
       </div>
     </div>
     <div class="header-actions">
       <button id="open-add-modal" class="btn btn-primary">+ Add entry</button>
+      <button id="open-stats-modal" class="btn btn-outline">📊 Stats</button>
+      <button id="export-btn" class="btn btn-outline">⬇ Export</button>
       <button id="sign-out-btn" class="btn btn-ghost">Sign out</button>
     </div>
   </header>
 
   <div class="search-row">
-    <input type="text" id="search-input" placeholder="Search a title in English or rōmaji…" autocomplete="off">
+    <input type="text" id="search-input" placeholder="Search a title, rōmaji, or tag…" autocomplete="off">
   </div>
+
+  <div class="controls-row">
+    <label class="control-select">Sort
+      <select id="sort-select">
+        <option value="newest">Newest added</option>
+        <option value="oldest">Oldest added</option>
+        <option value="title-asc">Title A–Z</option>
+        <option value="title-desc">Title Z–A</option>
+        <option value="rating-desc">Rating: best first</option>
+        <option value="rating-asc">Rating: worst first</option>
+      </select>
+    </label>
+    <label class="control-select">Rating
+      <select id="rating-filter-select">
+        <option value="all">All ratings</option>
+        <option value="verygood">Very Good</option>
+        <option value="good">Good</option>
+        <option value="neutral">Neutral</option>
+        <option value="bad">Bad</option>
+        <option value="verybad">Very Bad</option>
+        <option value="unrated">Unrated</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="tag-filter-row" class="tag-filter-row"></div>
 
   <nav class="tabs" id="tabs">
     <button class="tab active" data-tab="all">All</button>
-    <button class="tab" data-tab="good">Good</button>
-    <button class="tab" data-tab="bad">Bad</button>
     <button class="tab" data-tab="watchlist">Watchlist <span id="watchlist-count" class="tab-count"></span></button>
+    <button class="tab" data-tab="trash">Trash <span id="trash-count" class="tab-count"></span></button>
   </nav>
 
   <main id="list-container" class="list-container">
@@ -93,22 +120,43 @@
       </div>
       <p id="lookup-status" class="lookup-status" hidden></p>
 
+      <label>Tags (comma-separated, optional)
+        <input type="text" id="field-tags" placeholder="e.g. shounen, isekai, short">
+      </label>
+
       <div id="watched-fields">
         <fieldset class="rating-fieldset">
           <legend>Rating</legend>
+          <label class="pill-radio"><input type="radio" name="rating" value="verygood"> Very Good</label>
           <label class="pill-radio"><input type="radio" name="rating" value="good"> Good</label>
+          <label class="pill-radio"><input type="radio" name="rating" value="neutral"> Neutral</label>
           <label class="pill-radio"><input type="radio" name="rating" value="bad"> Bad</label>
-          <label class="pill-radio"><input type="radio" name="rating" value="" checked> No rating yet</label>
+          <label class="pill-radio"><input type="radio" name="rating" value="verybad"> Very Bad</label>
+          <label class="pill-radio"><input type="radio" name="rating" value="" checked> Unrated</label>
         </fieldset>
 
-        <label>Season status
-          <select id="field-season">
-            <option value="single">Only one season</option>
-            <option value="caughtup">Fully caught up, no sequel yet</option>
-            <option value="newseason">New season out — want to watch</option>
-            <option value="notreleased">Sequel announced, not released yet</option>
-          </select>
-        </label>
+        <fieldset class="season-fieldset">
+          <legend>Season tracking</legend>
+          <label class="checkbox-row">
+            <input type="checkbox" id="field-last-season">
+            This is the last season (no sequel expected)
+          </label>
+
+          <div id="season-detail-fields">
+            <label>Have you watched everything released so far?
+              <select id="field-season-status">
+                <option value="caughtup">Yes, caught up</option>
+                <option value="out">No — a new season is out</option>
+              </select>
+            </label>
+            <label>Next season release date (optional)
+              <div class="date-row">
+                <input type="date" id="field-season-date">
+                <button type="button" id="clear-date-btn" class="btn btn-ghost clear-date-btn">Clear</button>
+              </div>
+            </label>
+          </div>
+        </fieldset>
       </div>
 
       <label>Notes (optional)
@@ -123,6 +171,17 @@
         </div>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ============ STATS MODAL ============ -->
+<div id="stats-modal-backdrop" class="modal-backdrop" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>Your stats</h2>
+      <button id="stats-close" class="icon-btn" aria-label="Close">×</button>
+    </div>
+    <div id="stats-content" class="stats-content"></div>
   </div>
 </div>
 
