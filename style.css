@@ -14,6 +14,8 @@
   --hanko-deep: #7e2c2a;
   --gold: #c99a4a;
   --teal: #3f6e64;
+  --teal-deep: #24463e;
+  --neutral-tone: #8a7f5f;
   --line: #d8cead;
   --radius: 6px;
   --shadow-soft: 0 1px 2px rgba(14, 19, 34, 0.08), 0 8px 20px rgba(14, 19, 34, 0.10);
@@ -234,8 +236,11 @@ button, input, select, textarea {
   transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
 .entry-card:hover { box-shadow: var(--shadow-lift); transform: translateY(-1px); }
+.entry-card.rating-verygood { border-left-color: var(--teal-deep); }
 .entry-card.rating-good { border-left-color: var(--teal); }
+.entry-card.rating-neutral { border-left-color: var(--neutral-tone); }
 .entry-card.rating-bad { border-left-color: var(--hanko); }
+.entry-card.rating-verybad { border-left-color: var(--hanko-deep); }
 .entry-main { min-width: 0; }
 .entry-title { font-weight: 600; font-size: 1.04rem; letter-spacing: -0.003em; }
 .entry-romaji {
@@ -258,8 +263,11 @@ button, input, select, textarea {
   transform: rotate(-4deg);
   white-space: nowrap;
 }
+.stamp-verygood { color: var(--teal-deep); }
 .stamp-good { color: var(--teal); }
+.stamp-neutral { color: var(--neutral-tone); }
 .stamp-bad { color: var(--hanko); }
+.stamp-verybad { color: var(--hanko-deep); }
 
 .season-flag {
   font-size: 0.74rem;
@@ -270,6 +278,106 @@ button, input, select, textarea {
   white-space: nowrap;
   display: inline-block;
 }
+.season-flag-out { background: #fde3df; color: var(--hanko-deep); }
+.season-flag-upcoming { background: #eef1e0; color: #556b2f; }
+
+/* ---------- controls row (sort / rating filter) ---------- */
+.controls-row {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.control-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9aa2c4;
+  flex: 1;
+  min-width: 140px;
+}
+.control-select select {
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--paper-warm);
+  color: var(--text);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+/* ---------- tag chips ---------- */
+.tag-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.2rem;
+}
+.tag-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid var(--ink-line);
+  color: #c3c9e3;
+  padding: 0.3rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.tag-chip:hover { border-color: var(--gold); color: #fff; }
+.tag-chip.active { background: var(--gold); color: var(--ink-deep); border-color: var(--gold); }
+
+.entry-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+.entry-tag-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--paper);
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+}
+
+/* ---------- season fieldset / checkbox / date ---------- */
+.season-fieldset { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.season-fieldset legend { font-size: 0.84rem; font-weight: 600; color: var(--text-muted); padding: 0; margin-bottom: 0.2rem; }
+.checkbox-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem !important;
+  font-weight: 500 !important;
+  color: var(--text) !important;
+  cursor: pointer;
+}
+.checkbox-row input { accent-color: var(--hanko); width: 17px; height: 17px; }
+#season-detail-fields { display: flex; flex-direction: column; gap: 0.9rem; }
+.date-row { display: flex; gap: 0.5rem; align-items: center; }
+.date-row input[type=date] { flex: 1; }
+.clear-date-btn { padding: 0.5rem 0.7rem; font-size: 0.78rem; }
+
+/* ---------- stats modal ---------- */
+.stats-content h3 { font-size: 0.95rem; margin: 1.3rem 0 0.6rem; }
+.stats-grid { display: flex; gap: 0.6rem; }
+.stat-box {
+  flex: 1;
+  background: var(--paper);
+  border-radius: 8px;
+  padding: 0.9rem 0.6rem;
+  text-align: center;
+}
+.stat-num { font-family: "Space Grotesk", sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+.stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+.stats-bars { display: flex; flex-direction: column; gap: 0.5rem; }
+.stats-bar-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.78rem; }
+.stats-bar-label { width: 80px; flex-shrink: 0; color: var(--text-muted); font-weight: 600; }
+.stats-bar-track { flex: 1; background: var(--paper); border-radius: 6px; height: 10px; overflow: hidden; }
+.stats-bar-fill { height: 100%; background: var(--hanko); border-radius: 6px; }
+.stats-bar-count { width: 20px; text-align: right; color: var(--text-muted); }
+.stats-line { font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; }
 
 .watchlist-move-btn {
   font-size: 0.76rem;
